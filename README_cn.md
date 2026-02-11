@@ -10,7 +10,7 @@
 
 ## 安装
 
-1. 打开本项目的 [Releases](releases) 页面。
+1. 打开本项目的 [Releases](https://github.com/canwdev/obsidian-calendar-plugin/releases) 页面。
 2. 在最新版本的附件中下载 `calendar-react.zip`。
 3. 解压后将 `calendar-react` 文件夹放入仓库的插件目录：  
    `<仓库路径>/.obsidian/plugins/`
@@ -32,5 +32,5 @@
 ### 热重载
 
 1. 可创建 `.env` 文件并设置构建输出目录（如 `OUT_DIR=../TestPlugins/.obsidian/plugins/calendar-react`）。
-2. 在 Obsidian 中安装 [hot-reload](https://github.com/pjeby/hot-reload) 插件。
+2. 在 Obsidian 中安装 [hot-reload](https://github.com/pjeby/hot-reload) 插件，并在 `calendar-react` 目录下创建 `.hotreload` 文件。
 3. 执行 `bun run build`（或自行配置 watch 模式）。hot-reload 会监听插件目录中构建产物的变化并自动重载。

@@ -10,7 +10,7 @@ The refactor was largely done with [Cursor](https://cursor.com).
 
 ## Installation
 
-1. Open this project’s [Releases](releases) page.
+1. Open this project’s [Releases](https://github.com/canwdev/obsidian-calendar-plugin/releases) page.
 2. Download the latest `calendar-react.zip` from the release assets.
 3. Unzip it and place the `calendar-react` folder into your vault’s plugin directory:  
    `<vault>/.obsidian/plugins/`
@@ -32,5 +32,5 @@ The refactor was largely done with [Cursor](https://cursor.com).
 ### Hot reload
 
 1. You can create a `.env` file and specify the build output directory (e.g. `OUT_DIR=../TestPlugins/.obsidian/plugins/calendar-react`).
-2. Install the [hot-reload](https://github.com/pjeby/hot-reload) plugin in Obsidian.
+2. Install the [hot-reload](https://github.com/pjeby/hot-reload) plugin in Obsidian, and create a `.hotreload` file in the `calendar-react` directory.
 3. Run `bun run build` (or use watch mode if you add one). Hot-reload will pick up changes to the built files in your plugin directory.
