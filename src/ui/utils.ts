@@ -4,7 +4,7 @@ import { getDateFromFile, getDateUID } from "obsidian-daily-notes-interface";
 export const classList = (obj: Record<string, boolean>): string[] => {
   return Object.entries(obj)
     .filter(([_k, v]) => !!v)
-    .map(([k, _k]) => k);
+    .map(([k]) => k);
 };
 
 export function clamp(
@@ -19,8 +19,8 @@ export function partition(
   arr: string[],
   predicate: (elem: string) => boolean
 ): [string[], string[]] {
-  const pass = [];
-  const fail = [];
+  const pass: string[] = [];
+  const fail: string[] = [];
 
   arr.forEach((elem) => {
     if (predicate(elem)) {
@@ -36,15 +36,12 @@ export function partition(
 /**
  * Lookup the dateUID for a given file. It compares the filename
  * to the daily and weekly note formats to find a match.
- *
- * @param file
  */
-export function getDateUIDFromFile(file: TFile | null): string {
+export function getDateUIDFromFile(file: TFile | null): string | null {
   if (!file) {
     return null;
   }
 
-  // TODO: I'm not checking the path!
   let date = getDateFromFile(file, "day");
   if (date) {
     return getDateUID(date, "day");

@@ -1,3 +1,4 @@
+import "./styles.css";
 import type { Moment, WeekSpec } from "moment";
 import { App, Plugin, WorkspaceLeaf } from "obsidian";
 
@@ -6,7 +7,7 @@ import { settings } from "./ui/stores";
 import {
   appHasPeriodicNotesPluginLoaded,
   CalendarSettingsTab,
-  ISettings,
+  type ISettings,
 } from "./settings";
 import CalendarView from "./view";
 
@@ -94,12 +95,10 @@ export default class CalendarPlugin extends Plugin {
 
   async loadOptions(): Promise<void> {
     const options = await this.loadData();
-    settings.update((old) => {
-      return {
-        ...old,
-        ...(options || {}),
-      };
-    });
+    settings.update((old) => ({
+      ...old,
+      ...(options || {}),
+    }));
 
     await this.saveData(this.options);
   }
