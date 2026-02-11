@@ -85,7 +85,9 @@ function createSelectedFileStore(): ReturnType<typeof createWritable<string | nu
   return {
     ...store,
     setFile: (file: TFile | null) => {
-      store.set(file ? getDateUIDFromFile(file) : null);
+      const next = file ? getDateUIDFromFile(file) : null;
+      if (store.getValue() === next) return;
+      store.set(next);
     },
   };
 }

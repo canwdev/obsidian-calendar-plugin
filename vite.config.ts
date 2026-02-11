@@ -26,7 +26,8 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "../../TestPlugins/.obsidian/plugins/calendar-react",
+    // 指定为你的插件目录，并配合 https://github.com/pjeby/hot-reload 插件实现热重载
+    outDir: "../TestPlugins/.obsidian/plugins/calendar-react",
     emptyOutDir: false,
     lib: {
       entry: path.resolve(__dirname, "src/main.ts"),

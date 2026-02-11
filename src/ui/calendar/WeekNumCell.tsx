@@ -1,6 +1,6 @@
 import type { Moment } from "moment";
 import { getDateUID } from "obsidian-daily-notes-interface";
-import { type ReactElement, useEffect, useState } from "react";
+import { memo, type ReactElement, useEffect, useState } from "react";
 
 import type { IDayMetadata } from "./types";
 import { getStartOfWeek, isMetaPressed } from "./utils";
@@ -16,7 +16,7 @@ interface WeekNumCellProps {
   onHover: (date: Moment, target: EventTarget, isMetaPressed: boolean) => void;
 }
 
-export function WeekNumCell({
+function WeekNumCellInner({
   weekNum,
   days,
   selectedId,
@@ -81,3 +81,5 @@ export function WeekNumCell({
     </td>
   );
 }
+
+export const WeekNumCell = memo(WeekNumCellInner);

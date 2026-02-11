@@ -1,6 +1,6 @@
 import type { Moment } from "moment";
 import { getDateUID } from "obsidian-daily-notes-interface";
-import { type ReactElement, useEffect, useState } from "react";
+import { memo, type ReactElement, useEffect, useState } from "react";
 
 import type { IDayMetadata } from "./types";
 import { isMetaPressed } from "./utils";
@@ -17,7 +17,7 @@ interface DayCellProps {
   onHover: (date: Moment, target: EventTarget, isMetaPressed: boolean) => void;
 }
 
-export function DayCell({
+function DayCellInner({
   date,
   today,
   displayedMonth,
@@ -86,3 +86,5 @@ export function DayCell({
     </td>
   );
 }
+
+export const DayCell = memo(DayCellInner);
