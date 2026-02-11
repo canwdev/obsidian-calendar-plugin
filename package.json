@@ -1,7 +1,7 @@
 {
   "name": "calendar",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "main.js",
   "type": "module",
   "scripts": {
@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "obsidian-daily-notes-interface": "^0.9.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
