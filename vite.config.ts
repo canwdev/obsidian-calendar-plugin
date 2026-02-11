@@ -31,6 +31,10 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), copyManifestPlugin()],
+    esbuild: {
+      legalComments: "none",
+      drop: ["debugger"],
+    },
     resolve: {
       alias: {
         src: path.resolve(__dirname, "src"),
@@ -39,6 +43,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir,
       emptyOutDir: false,
+      cssMinify: true,
       lib: {
         entry: path.resolve(__dirname, "src/main.ts"),
         formats: ["cjs"],

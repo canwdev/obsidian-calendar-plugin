@@ -110,6 +110,8 @@ export function MonthYearPicker({
             color: "var(--text-normal)",
             border: "1px solid var(--background-modifier-border)",
             borderRadius: "4px",
+            textAlign: "center",
+            cursor: "pointer",
           }}
         >
           {years.map((y) => (
