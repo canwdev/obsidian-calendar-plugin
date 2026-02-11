@@ -62,7 +62,7 @@ function WeekNumCellInner({
   return (
     <td className="border-r border-[var(--background-modifier-border)] align-top">
       <div
-        className={`rounded cursor-pointer text-center text-[0.65rem] p-1 transition-colors box-border w-full min-h-[2.25rem] ${classes.join(" ")}`}
+        className={`rounded cursor-pointer text-center text-[0.65rem] p-0.5 transition-colors box-border w-full min-h-[2rem] ${classes.join(" ")}`}
         style={{
           backgroundColor: isActive ? "var(--interactive-accent)" : "var(--color-background-weeknum)",
           color: isActive ? "var(--text-on-accent)" : "var(--color-text-weeknum)",
@@ -72,7 +72,7 @@ function WeekNumCellInner({
         onPointerOver={handlePointerOver}
       >
         <span className="block leading-tight">{weekNum}</span>
-        <div className="flex flex-wrap justify-center items-center h-4 min-h-4 leading-none">
+        <div className="flex flex-wrap justify-center items-center gap-x-px gap-y-0.5 h-3 min-h-3 leading-none">
           {dots.map((dot, i) => (
             <Dot key={i} {...dot} isActive={isActive} />
           ))}

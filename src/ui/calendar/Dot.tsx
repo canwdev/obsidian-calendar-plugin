@@ -8,7 +8,7 @@ export function Dot({ className = "", isFilled, isActive }: DotProps): JSX.Eleme
   const color = isActive ? "var(--text-on-accent)" : "var(--color-dot)";
   return (
     <svg
-      className={`inline-block h-1.5 w-1.5 mx-0.5 ${className}`}
+      className={`inline-block h-1.5 w-1.5 ${className}`}
       viewBox="0 0 6 6"
       xmlns="http://www.w3.org/2000/svg"
     >
