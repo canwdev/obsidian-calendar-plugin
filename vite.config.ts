@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
           format: "cjs",
           exports: "default",
         },
-        external: ["obsidian", "obsidian-daily-notes-interface", "fs", "os", "path"],
+        external: ["obsidian", "fs", "os", "path"],
       },
       target: "es2022",
       sourcemap: false,
