@@ -1,7 +1,7 @@
 import type { Moment } from "moment";
-import { type ReactElement, useEffect, useMemo, useState } from "react";
+import { type ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 
-import type { ICalendarSource } from "./types";
+import type { ICalendarSource, IDayMetadata } from "./types";
 import { getDailyMetadata, getWeeklyMetadata } from "./metadata";
 import { getDaysOfWeek, getMonth, isWeekend } from "./utils";
 import { Nav } from "./Nav";
@@ -13,7 +13,6 @@ interface CalendarProps {
   sources: ICalendarSource[];
   selectedId: string | null;
   showWeekNums: boolean;
-  today: Moment;
   displayedMonth: Moment;
   onDisplayedMonthChange: (m: Moment) => void;
   onClickDay: (date: Moment, isMetaPressed: boolean) => void;
@@ -25,11 +24,10 @@ interface CalendarProps {
 }
 
 export function Calendar({
-  refreshTrigger: _refreshTrigger,
+  refreshTrigger = 0,
   sources,
   selectedId,
   showWeekNums,
-  today,
   displayedMonth,
   onDisplayedMonthChange,
   onClickDay,
@@ -39,14 +37,30 @@ export function Calendar({
   onContextMenuDay,
   onContextMenuWeek,
 }: CalendarProps): ReactElement {
-  const [currentToday, setCurrentToday] = useState(today);
+  const [currentToday, setCurrentToday] = useState(() => window.moment());
 
   const month = useMemo(() => getMonth(displayedMonth), [displayedMonth]);
   const daysOfWeek = useMemo(() => getDaysOfWeek(), []);
 
-  useEffect(() => {
-    setCurrentToday(today);
-  }, [today]);
+  const dailyMetadataCache = useMemo(() => {
+    const cache = new Map<string, Promise<IDayMetadata>>();
+    for (const week of month) {
+      for (const day of week.days) {
+        const key = day.format("YYYY-MM-DD");
+        if (!cache.has(key)) cache.set(key, getDailyMetadata(sources, day));
+      }
+    }
+    return cache;
+  }, [month, sources, refreshTrigger]);
+
+  const weeklyMetadataCache = useMemo(() => {
+    const cache = new Map<string, Promise<IDayMetadata>>();
+    for (const week of month) {
+      const key = week.days[0].format("YYYY-MM-DD");
+      if (!cache.has(key)) cache.set(key, getWeeklyMetadata(sources, week.days[0]));
+    }
+    return cache;
+  }, [month, sources, refreshTrigger]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,9 +73,18 @@ export function Calendar({
     return () => clearInterval(interval);
   }, [displayedMonth, onDisplayedMonthChange]);
 
-  const incrementMonth = () => onDisplayedMonthChange(displayedMonth.clone().add(1, "month"));
-  const decrementMonth = () => onDisplayedMonthChange(displayedMonth.clone().subtract(1, "month"));
-  const resetMonth = () => onDisplayedMonthChange(currentToday.clone());
+  const incrementMonth = useCallback(
+    () => onDisplayedMonthChange(displayedMonth.clone().add(1, "month")),
+    [displayedMonth, onDisplayedMonthChange]
+  );
+  const decrementMonth = useCallback(
+    () => onDisplayedMonthChange(displayedMonth.clone().subtract(1, "month")),
+    [displayedMonth, onDisplayedMonthChange]
+  );
+  const resetMonth = useCallback(
+    () => onDisplayedMonthChange(currentToday.clone()),
+    [currentToday, onDisplayedMonthChange]
+  );
 
   return (
     <div id="calendar-container" className="calendar-react-root px-2">
@@ -117,7 +140,7 @@ export function Calendar({
                   weekNum={week.weekNum}
                   days={week.days}
                   selectedId={selectedId}
-                  metadataPromise={getWeeklyMetadata(sources, week.days[0])}
+                  metadataPromise={weeklyMetadataCache.get(week.days[0].format("YYYY-MM-DD")) ?? null}
                   onClick={onClickWeek}
                   onContextMenu={onContextMenuWeek}
                   onHover={onHoverWeek}
@@ -130,7 +153,7 @@ export function Calendar({
                   today={currentToday}
                   displayedMonth={displayedMonth}
                   selectedId={selectedId}
-                  metadataPromise={getDailyMetadata(sources, day)}
+                  metadataPromise={dailyMetadataCache.get(day.format("YYYY-MM-DD")) ?? null}
                   onClick={onClickDay}
                   onContextMenu={onContextMenuDay}
                   onHover={onHoverDay}

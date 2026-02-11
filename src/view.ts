@@ -25,10 +25,26 @@ import {
   wordCountSource,
 } from "./ui/sources";
 
+const REFRESH_DEBOUNCE_MS = 300;
+
+function debounce<T extends (...args: unknown[]) => void>(fn: T, ms: number): T {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  return ((...args: Parameters<T>) => {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      timeoutId = null;
+      fn(...args);
+    }, ms);
+  }) as T;
+}
+
 export default class CalendarView extends ItemView {
   private root: Root | null = null;
   private reactContainer: HTMLDivElement | null = null;
   private calendarRef: { current: CalendarRootHandle | null } = { current: null };
+  private debouncedRefresh = debounce(() => {
+    if (this.calendarRef.current) this.calendarRef.current.refresh();
+  }, REFRESH_DEBOUNCE_MS);
 
   constructor(leaf: WorkspaceLeaf) {
     super(leaf);
@@ -175,23 +191,17 @@ export default class CalendarView extends ItemView {
     }
   }
 
-  private async onFileModified(file: TFile): Promise<void> {
+  private onFileModified(file: TFile): void {
     const date = getDateFromFile(file, "day") || getDateFromFile(file, "week");
-    if (date && this.calendarRef.current) {
-      this.calendarRef.current.refresh();
-    }
+    if (date) this.debouncedRefresh();
   }
 
   private onFileCreated(file: TFile): void {
-    if (this.app.workspace.layoutReady && this.calendarRef.current) {
-      if (getDateFromFile(file, "day")) {
-        dailyNotes.reindex();
-        this.calendarRef.current.refresh();
-      }
-      if (getDateFromFile(file, "week")) {
-        weeklyNotes.reindex();
-        this.calendarRef.current.refresh();
-      }
+    if (!this.app.workspace.layoutReady) return;
+    if (getDateFromFile(file, "day")) dailyNotes.reindex();
+    if (getDateFromFile(file, "week")) weeklyNotes.reindex();
+    if (getDateFromFile(file, "day") || getDateFromFile(file, "week")) {
+      this.debouncedRefresh();
     }
   }
 
@@ -205,14 +215,9 @@ export default class CalendarView extends ItemView {
     const leaf = this.app.workspace.activeLeaf;
     if (!leaf) return;
     const { view } = leaf;
-    let file: TFile | null = null;
-    if (view instanceof FileView) {
-      file = view.file;
-    }
+    const file = view instanceof FileView ? view.file : null;
     activeFile.setFile(file);
-    if (this.calendarRef.current) {
-      this.calendarRef.current.refresh();
-    }
+    if (this.calendarRef.current) this.calendarRef.current.refresh();
   }
 
   public revealActiveNote(): void {

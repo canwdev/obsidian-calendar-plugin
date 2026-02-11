@@ -71,8 +71,6 @@ export const CalendarRoot = forwardRef<CalendarRootHandle, CalendarRootProps>(
       currentSettings.weekStart,
     ]);
 
-    const today = window.moment();
-
     const setDisplayedMonth = useCallback((date: Moment) => {
       setDisplayedMonthState(date.clone());
     }, []);
@@ -96,7 +94,6 @@ export const CalendarRoot = forwardRef<CalendarRootHandle, CalendarRootProps>(
         sources={sources}
         selectedId={selectedId}
         showWeekNums={currentSettings.showWeeklyNote}
-        today={today}
         displayedMonth={displayedMonth}
         onDisplayedMonthChange={setDisplayedMonth}
         onClickDay={onClickDay}
