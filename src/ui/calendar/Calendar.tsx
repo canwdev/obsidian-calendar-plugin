@@ -87,7 +87,7 @@ export function Calendar({
   );
 
   return (
-    <div id="calendar-react-container" className="calendar-react-root px-2">
+    <div id="calendar-react-container" className="calendar-react-root px-1.5">
       <Nav
         today={currentToday}
         displayedMonth={displayedMonth}
@@ -110,7 +110,7 @@ export function Calendar({
           <tr>
             {showWeekNums && (
               <th
-                className="text-center text-[0.6em] uppercase tracking-wider p-1"
+                className="text-center text-[0.6em] uppercase tracking-wider p-0.5"
                 style={{
                   backgroundColor: "var(--color-background-heading)",
                   color: "var(--color-text-heading)",
@@ -122,7 +122,7 @@ export function Calendar({
             {daysOfWeek.map((day) => (
               <th
                 key={day}
-                className="text-center text-[0.6em] uppercase tracking-wider p-1"
+                className="text-center text-[0.6em] uppercase tracking-wider p-0.5"
                 style={{
                   backgroundColor: "var(--color-background-heading)",
                   color: "var(--color-text-heading)",

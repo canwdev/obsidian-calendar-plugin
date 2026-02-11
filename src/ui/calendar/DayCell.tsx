@@ -66,7 +66,7 @@ function DayCellInner({
   return (
     <td className="align-top">
       <div
-        className={`rounded cursor-pointer text-center text-sm p-1 relative transition-colors box-border w-full min-h-[2.25rem] ${classes.join(" ")} ${isAdjacent ? "opacity-25" : ""}`}
+        className={`rounded cursor-pointer text-center text-sm p-0.5 relative transition-colors box-border w-full min-h-[2rem] ${classes.join(" ")} ${isAdjacent ? "opacity-25" : ""}`}
         style={{
           backgroundColor: isActive ? "var(--interactive-accent)" : "var(--color-background-day)",
           color: isActive ? "var(--text-on-accent)" : isToday ? "var(--color-text-today)" : "var(--color-text-day)",
@@ -77,7 +77,7 @@ function DayCellInner({
         {...dataAttrs}
       >
         <span className="block leading-tight">{date.format("D")}</span>
-        <div className="flex flex-wrap justify-center items-center h-4 min-h-4 leading-none">
+        <div className="flex flex-wrap justify-center items-center gap-x-px gap-y-0.5 h-3 min-h-3 leading-none">
           {dots.map((dot, i) => (
             <Dot key={i} {...dot} isActive={isActive} />
           ))}

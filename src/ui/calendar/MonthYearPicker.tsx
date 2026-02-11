@@ -1,6 +1,8 @@
 import type { Moment } from "moment";
 import { type ReactElement, useEffect, useRef, useState } from "react";
 
+import { Arrow } from "./Arrow";
+
 const YEAR_SPAN = 6;
 const MONTHS_PER_ROW = 4;
 
@@ -91,19 +93,11 @@ export function MonthYearPicker({
           gap: "4px",
         }}
       >
-        <button
-          type="button"
-          className="clickable-icon"
-          aria-label="Previous year"
+        <Arrow
+          direction="left"
           onClick={() => setYear((y) => y - 1)}
-          style={{
-            padding: "2px 6px",
-            fontSize: "0.9em",
-            color: "var(--text-muted)",
-          }}
-        >
-          ‹
-        </button>
+          tooltip="Previous year"
+        />
         <select
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
@@ -124,19 +118,11 @@ export function MonthYearPicker({
             </option>
           ))}
         </select>
-        <button
-          type="button"
-          className="clickable-icon"
-          aria-label="Next year"
+        <Arrow
+          direction="right"
           onClick={() => setYear((y) => y + 1)}
-          style={{
-            padding: "2px 6px",
-            fontSize: "0.9em",
-            color: "var(--text-muted)",
-          }}
-        >
-          ›
-        </button>
+          tooltip="Next year"
+        />
       </div>
       <div
         className="calendar-quick-switch-months"
