@@ -1,4 +1,4 @@
-import { defineConfig, type ResolvedConfig } from "vite";
+import { defineConfig, loadEnv, type ResolvedConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { copyFileSync, mkdirSync } from "fs";
@@ -18,33 +18,37 @@ const copyManifestPlugin = () => {
   };
 };
 
-export default defineConfig({
-  plugins: [react(), copyManifestPlugin()],
-  resolve: {
-    alias: {
-      src: path.resolve(__dirname, "src"),
-    },
-  },
-  build: {
-    // 指定为你的插件目录，并配合 https://github.com/pjeby/hot-reload 插件实现热重载
-    outDir: "../TestPlugins/.obsidian/plugins/calendar-react",
-    emptyOutDir: false,
-    lib: {
-      entry: path.resolve(__dirname, "src/main.ts"),
-      formats: ["cjs"],
-      fileName: () => "main.js",
-    },
-    rollupOptions: {
-      output: {
-        chunkFileNames: "[name].js",
-        assetFileNames: (assetInfo) =>
-          assetInfo.name?.endsWith(".css") ? "styles.css" : "[name].[ext]",
-        format: "cjs",
-        exports: "default",
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  const outDir = env.OUT_DIR ?? "dist";
+
+  return {
+    plugins: [react(), copyManifestPlugin()],
+    resolve: {
+      alias: {
+        src: path.resolve(__dirname, "src"),
       },
-      external: ["obsidian", "fs", "os", "path"],
     },
-    target: "es2022",
-    sourcemap: false,
-  },
+    build: {
+      outDir,
+      emptyOutDir: false,
+      lib: {
+        entry: path.resolve(__dirname, "src/main.ts"),
+        formats: ["cjs"],
+        fileName: () => "main.js",
+      },
+      rollupOptions: {
+        output: {
+          chunkFileNames: "[name].js",
+          assetFileNames: (assetInfo) =>
+            assetInfo.name?.endsWith(".css") ? "styles.css" : "[name].[ext]",
+          format: "cjs",
+          exports: "default",
+        },
+        external: ["obsidian", "fs", "os", "path"],
+      },
+      target: "es2022",
+      sourcemap: false,
+    },
+  };
 });

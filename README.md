@@ -21,6 +21,6 @@ The refactor was largely done with [Cursor](https://cursor.com).
 
 ### Hot reload
 
-1. Set `outDir` in `vite.config.ts` to your Obsidian plugin folder (e.g. `path/to/your-vault/.obsidian/plugins/calendar-react`).
+1. You can create a `.env` file and specify the build output directory (e.g. `OUT_DIR=../TestPlugins/.obsidian/plugins/calendar-react`).
 2. Install the [hot-reload](https://github.com/pjeby/hot-reload) plugin in Obsidian.
 3. Run `bun run build` (or use watch mode if you add one). Hot-reload will pick up changes to the built files in your plugin directory.
