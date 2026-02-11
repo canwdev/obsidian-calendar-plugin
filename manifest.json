@@ -1,11 +1,10 @@
 {
   "id": "calendar-react",
-  "name": "Calendar",
-  "description": "Calendar view of your daily notes",
-  "version": "1.5.10",
-  "author": "Liam Cain",
-  "authorUrl": "https://github.com/liamcain/",
-  "fundingUrl": "https://www.buymeacoffee.com/liamcain",
+  "name": "Calendar (React)",
+  "description": "Calendar view of your daily notes (React reimplementation, original by Liam Cain)",
+  "version": "1.0.0",
+  "author": "canwdev",
+  "authorUrl": "https://github.com/canwdev",
   "isDesktopOnly": false,
   "minAppVersion": "0.9.11"
 }
