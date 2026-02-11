@@ -14,7 +14,7 @@
   margin: 0;
 }
 
-#calendar-container {
+#calendar-react-container {
   --color-background-heading: transparent;
   --color-background-day: transparent;
   --color-background-weeknum: transparent;

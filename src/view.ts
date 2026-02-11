@@ -78,7 +78,7 @@ export default class CalendarView extends ItemView {
   }
 
   getDisplayText(): string {
-    return "Calendar";
+    return "Calendar (React)";
   }
 
   getIcon(): string {

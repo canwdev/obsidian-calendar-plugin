@@ -32,9 +32,12 @@ jobs:
         run: bun run build
 
       - name: Prepare release asset
+        id: prepare
         run: |
+          VERSION=$(bun -e "console.log(require('./package.json').version)")
           mv dist calendar-react
-          zip -r calendar-react.zip calendar-react
+          zip -r calendar-react-v$VERSION.zip calendar-react
+          echo "zip_name=calendar-react-v$VERSION.zip" >> $GITHUB_OUTPUT
 
       - name: Resolve release tag
         id: tag
@@ -54,7 +57,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
-          files: calendar-react.zip
+          files: ${{ steps.prepare.outputs.zip_name }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
