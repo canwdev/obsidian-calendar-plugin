@@ -94,6 +94,7 @@ export function Calendar({
         onIncrement={incrementMonth}
         onDecrement={decrementMonth}
         onReset={resetMonth}
+        onDisplayedMonthChange={onDisplayedMonthChange}
       />
       <table className="w-full border-collapse table-fixed calendar-table">
         <colgroup>
