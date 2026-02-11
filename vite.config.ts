@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv, type ResolvedConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import { copyFileSync, mkdirSync } from "fs";
+import { mkdirSync, readFileSync, writeFileSync } from "fs";
 
 const copyManifestPlugin = () => {
   let outDir: string;
@@ -11,9 +11,16 @@ const copyManifestPlugin = () => {
       outDir = path.resolve(config.root, config.build.outDir);
     },
     closeBundle() {
-      const src = path.resolve(__dirname, "manifest.json");
+      const pkgPath = path.resolve(__dirname, "package.json");
+      const manifestPath = path.resolve(__dirname, "manifest.json");
+      const pkg = JSON.parse(readFileSync(pkgPath, "utf-8")) as { version: string };
+      const manifest = JSON.parse(readFileSync(manifestPath, "utf-8")) as Record<string, unknown>;
+      manifest.version = pkg.version;
       mkdirSync(outDir, { recursive: true });
-      copyFileSync(src, path.join(outDir, "manifest.json"));
+      writeFileSync(
+        path.join(outDir, "manifest.json"),
+        JSON.stringify(manifest, null, 2)
+      );
     },
   };
 };

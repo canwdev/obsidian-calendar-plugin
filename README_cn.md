@@ -11,7 +11,7 @@
 ## 安装
 
 1. 打开本项目的 [Releases](https://github.com/canwdev/obsidian-calendar-plugin/releases) 页面。
-2. 在最新版本的附件中下载 `calendar-react.zip`。
+2. 在最新版本的附件中下载 `calendar-react-vX.Y.Z.zip`（X.Y.Z 为版本号）。
 3. 解压后将 `calendar-react` 文件夹放入仓库的插件目录：  
    `<仓库路径>/.obsidian/plugins/`
 4. 在 Obsidian 中启用 **Calendar (React)**：设置 → 社区插件 → 打开该插件。

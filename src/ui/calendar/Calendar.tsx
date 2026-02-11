@@ -87,7 +87,7 @@ export function Calendar({
   );
 
   return (
-    <div id="calendar-container" className="calendar-react-root px-2">
+    <div id="calendar-react-container" className="calendar-react-root px-2">
       <Nav
         today={currentToday}
         displayedMonth={displayedMonth}

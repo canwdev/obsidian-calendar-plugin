@@ -11,7 +11,7 @@ The refactor was largely done with [Cursor](https://cursor.com).
 ## Installation
 
 1. Open this project’s [Releases](https://github.com/canwdev/obsidian-calendar-plugin/releases) page.
-2. Download the latest `calendar-react.zip` from the release assets.
+2. Download the latest `calendar-react-vX.Y.Z.zip` from the release assets.
 3. Unzip it and place the `calendar-react` folder into your vault’s plugin directory:  
    `<vault>/.obsidian/plugins/`
 4. Enable **Calendar (React)** in Obsidian: Settings → Community plugins → Turn on.
