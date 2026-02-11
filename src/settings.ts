@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import { appHasDailyNotesPluginLoaded } from "obsidian-daily-notes-interface";
-import type { ILocaleOverride, IWeekStartOption } from "obsidian-calendar-ui";
+import type { ILocaleOverride, IWeekStartOption } from "src/ui/calendar/types";
 
 import { DEFAULT_WEEK_FORMAT, DEFAULT_WORDS_PER_DOT } from "src/constants";
 
@@ -11,7 +11,6 @@ export interface ISettings {
   weekStart: IWeekStartOption;
   shouldConfirmBeforeCreate: boolean;
 
-  // Weekly Note settings
   showWeeklyNote: boolean;
   weeklyNoteFormat: string;
   weeklyNoteTemplate: string;
@@ -30,9 +29,9 @@ const weekdays = [
   "saturday",
 ];
 
-export const defaultSettings = Object.freeze({
+export const defaultSettings: Readonly<ISettings> = Object.freeze({
   shouldConfirmBeforeCreate: true,
-  weekStart: "locale" as IWeekStartOption,
+  weekStart: "locale",
 
   wordsPerDot: DEFAULT_WORDS_PER_DOT,
 
@@ -45,9 +44,9 @@ export const defaultSettings = Object.freeze({
 });
 
 export function appHasPeriodicNotesPluginLoaded(): boolean {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const periodicNotes = (<any>window.app).plugins.getPlugin("periodic-notes");
-  return periodicNotes && periodicNotes.settings?.weekly?.enabled;
+  const app = window.app as unknown as { plugins: { getPlugin: (id: string) => { settings?: { weekly?: { enabled?: boolean } } } } };
+  const periodicNotes = app.plugins.getPlugin("periodic-notes");
+  return Boolean(periodicNotes?.settings?.weekly?.enabled);
 }
 
 export class CalendarSettingsTab extends PluginSettingTab {
@@ -74,9 +73,7 @@ export class CalendarSettingsTab extends PluginSettingTab {
       });
     }
 
-    this.containerEl.createEl("h3", {
-      text: "General Settings",
-    });
+    this.containerEl.createEl("h3", { text: "General Settings" });
     this.addDotThresholdSetting();
     this.addWeekStartSetting();
     this.addConfirmCreateSetting();
@@ -86,9 +83,7 @@ export class CalendarSettingsTab extends PluginSettingTab {
       this.plugin.options.showWeeklyNote &&
       !appHasPeriodicNotesPluginLoaded()
     ) {
-      this.containerEl.createEl("h3", {
-        text: "Weekly Note Settings",
-      });
+      this.containerEl.createEl("h3", { text: "Weekly Note Settings" });
       this.containerEl.createEl("p", {
         cls: "setting-item-description",
         text:
@@ -99,9 +94,7 @@ export class CalendarSettingsTab extends PluginSettingTab {
       this.addWeeklyNoteFolderSetting();
     }
 
-    this.containerEl.createEl("h3", {
-      text: "Advanced Settings",
-    });
+    this.containerEl.createEl("h3", { text: "Advanced Settings" });
     this.addLocaleOverrideSetting();
   }
 
@@ -125,7 +118,7 @@ export class CalendarSettingsTab extends PluginSettingTab {
     const { moment } = window;
 
     const localizedWeekdays = moment.weekdays();
-    const localeWeekStartNum = window._bundledLocaleWeekSpec.dow;
+    const localeWeekStartNum = window._bundledLocaleWeekSpec?.dow ?? 0;
     const localeWeekStart = moment.weekdays()[localeWeekStartNum];
 
     new Setting(this.containerEl)
@@ -169,7 +162,7 @@ export class CalendarSettingsTab extends PluginSettingTab {
         toggle.setValue(this.plugin.options.showWeeklyNote);
         toggle.onChange(async (value) => {
           this.plugin.writeOptions(() => ({ showWeeklyNote: value }));
-          this.display(); // show/hide weekly settings
+          this.display();
         });
       });
   }

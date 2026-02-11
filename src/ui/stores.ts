@@ -3,70 +3,96 @@ import {
   getAllDailyNotes,
   getAllWeeklyNotes,
 } from "obsidian-daily-notes-interface";
-import { writable } from "svelte/store";
 
-import { defaultSettings, ISettings } from "src/settings";
+import { defaultSettings, type ISettings } from "src/settings";
 
 import { getDateUIDFromFile } from "./utils";
 
-function createDailyNotesStore() {
+type Subscribe<T> = (value: T) => void;
+type Unsubscribe = () => void;
+
+function createWritable<T>(initial: T): {
+  subscribe: (fn: Subscribe<T>) => Unsubscribe;
+  set: (value: T) => void;
+  update: (fn: (prev: T) => T) => void;
+  getValue: () => T;
+} {
+  let value = initial;
+  const listeners = new Set<Subscribe<T>>();
+
+  const set = (v: T) => {
+    value = v;
+    listeners.forEach((fn) => fn(value));
+  };
+
+  const update = (fn: (prev: T) => T) => set(fn(value));
+
+  const subscribe = (fn: Subscribe<T>): Unsubscribe => {
+    listeners.add(fn);
+    fn(value);
+    return () => listeners.delete(fn);
+  };
+
+  const getValue = () => value;
+
+  return { set, update, subscribe, getValue };
+}
+
+function createDailyNotesStore(): ReturnType<typeof createWritable<Record<string, TFile> | null>> & { reindex: () => void } {
   let hasError = false;
-  const store = writable<Record<string, TFile>>(null);
+  const store = createWritable<Record<string, TFile> | null>(null);
   return {
+    ...store,
     reindex: () => {
       try {
-        const dailyNotes = getAllDailyNotes();
-        store.set(dailyNotes);
+        const notes = getAllDailyNotes();
+        store.set(notes);
         hasError = false;
       } catch (err) {
         if (!hasError) {
-          // Avoid error being shown multiple times
           console.log("[Calendar] Failed to find daily notes folder", err);
         }
         store.set({});
         hasError = true;
       }
     },
-    ...store,
   };
 }
 
-function createWeeklyNotesStore() {
+function createWeeklyNotesStore(): ReturnType<typeof createWritable<Record<string, TFile> | null>> & { reindex: () => void } {
   let hasError = false;
-  const store = writable<Record<string, TFile>>(null);
+  const store = createWritable<Record<string, TFile> | null>(null);
   return {
+    ...store,
     reindex: () => {
       try {
-        const weeklyNotes = getAllWeeklyNotes();
-        store.set(weeklyNotes);
+        const notes = getAllWeeklyNotes();
+        store.set(notes);
         hasError = false;
       } catch (err) {
         if (!hasError) {
-          // Avoid error being shown multiple times
           console.log("[Calendar] Failed to find weekly notes folder", err);
         }
         store.set({});
         hasError = true;
       }
     },
-    ...store,
   };
 }
 
-export const settings = writable<ISettings>(defaultSettings);
+function createSelectedFileStore(): ReturnType<typeof createWritable<string | null>> & { setFile: (file: TFile | null) => void } {
+  const store = createWritable<string | null>(null);
+  return {
+    ...store,
+    setFile: (file: TFile | null) => {
+      store.set(file ? getDateUIDFromFile(file) : null);
+    },
+  };
+}
+
+export const settings = createWritable<ISettings>({
+  ...defaultSettings,
+} as ISettings);
 export const dailyNotes = createDailyNotesStore();
 export const weeklyNotes = createWeeklyNotesStore();
-
-function createSelectedFileStore() {
-  const store = writable<string>(null);
-
-  return {
-    setFile: (file: TFile) => {
-      const id = getDateUIDFromFile(file);
-      store.set(id);
-    },
-    ...store,
-  };
-}
-
 export const activeFile = createSelectedFileStore();
