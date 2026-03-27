@@ -30,6 +30,12 @@ export default defineConfig(({ mode }) => {
   const outDir = env.OUT_DIR ?? "dist/.obsidian/plugins/calendar-react";
 
   return {
+    // Obsidian WebView has no Node `process`; React CJS checks process.env.NODE_ENV at runtime.
+    define: {
+      "process.env.NODE_ENV": JSON.stringify(
+        mode === "production" ? "production" : "development"
+      ),
+    },
     plugins: [react(), copyManifestPlugin()],
     esbuild: {
       legalComments: "none",
@@ -51,6 +57,10 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
+          // One JS file: Obsidian only loads main.js from the plugin folder.
+          inlineDynamicImports: true, // Vite 8: prefer codeSplitting:false when supported
+          banner:
+            'try{console.info("[calendar-react] main.js: bundle start");}catch(e){}',
           chunkFileNames: "[name].js",
           assetFileNames: (assetInfo) =>
             assetInfo.name?.endsWith(".css") ? "styles.css" : "[name].[ext]",
