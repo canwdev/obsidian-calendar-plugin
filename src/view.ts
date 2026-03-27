@@ -11,6 +11,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { createElement } from "react";
 
 import { TRIGGER_ON_OPEN, VIEW_TYPE_CALENDAR } from "src/constants";
+import { logStep, reportStartupError } from "src/startupLog";
 import { tryToCreateDailyNote } from "src/io/dailyNotes";
 import { tryToCreateWeeklyNote } from "src/io/weeklyNotes";
 
@@ -96,36 +97,48 @@ export default class CalendarView extends ItemView {
   }
 
   async onOpen(): Promise<void> {
-    const sources = [
-      customTagsSource,
-      streakSource,
-      wordCountSource,
-      tasksSource,
-    ];
-    this.app.workspace.trigger(TRIGGER_ON_OPEN, sources);
+    try {
+      logStep("CalendarView.onOpen: start");
 
-    const currentSettings = settings.getValue();
-    configureGlobalMomentLocale(
-      currentSettings.localeOverride,
-      currentSettings.weekStart
-    );
-    dailyNotes.reindex();
-    weeklyNotes.reindex();
+      const sources = [
+        customTagsSource,
+        streakSource,
+        wordCountSource,
+        tasksSource,
+      ];
+      logStep("CalendarView.onOpen: trigger sources");
+      this.app.workspace.trigger(TRIGGER_ON_OPEN, sources);
 
-    this.reactContainer = this.contentEl.createDiv();
-    this.root = createRoot(this.reactContainer);
-    this.root.render(
-      createElement(CalendarRoot, {
-        ref: this.calendarRef,
-        sources,
-        onClickDay: this.openOrCreateDailyNote,
-        onClickWeek: this.openOrCreateWeeklyNote,
-        onHoverDay: this.onHoverDay,
-        onHoverWeek: this.onHoverWeek,
-        onContextMenuDay: this.onContextMenuDay,
-        onContextMenuWeek: this.onContextMenuWeek,
-      })
-    );
+      const currentSettings = settings.getValue();
+      logStep("CalendarView.onOpen: configureGlobalMomentLocale");
+      configureGlobalMomentLocale(
+        currentSettings.localeOverride,
+        currentSettings.weekStart
+      );
+      logStep("CalendarView.onOpen: reindex daily/weekly notes");
+      dailyNotes.reindex();
+      weeklyNotes.reindex();
+
+      logStep("CalendarView.onOpen: createRoot + render");
+      this.reactContainer = this.contentEl.createDiv();
+      this.root = createRoot(this.reactContainer);
+      this.root.render(
+        createElement(CalendarRoot, {
+          ref: this.calendarRef,
+          sources,
+          onClickDay: this.openOrCreateDailyNote,
+          onClickWeek: this.openOrCreateWeeklyNote,
+          onHoverDay: this.onHoverDay,
+          onHoverWeek: this.onHoverWeek,
+          onContextMenuDay: this.onContextMenuDay,
+          onContextMenuWeek: this.onContextMenuWeek,
+        })
+      );
+      logStep("CalendarView.onOpen: complete");
+    } catch (e) {
+      reportStartupError("CalendarView.onOpen", e);
+      throw e;
+    }
   }
 
   onHoverDay(
