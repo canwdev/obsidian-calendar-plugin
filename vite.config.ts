@@ -27,7 +27,7 @@ const copyManifestPlugin = () => {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const outDir = env.OUT_DIR ?? "dist";
+  const outDir = env.OUT_DIR ?? "dist/.obsidian/plugins/calendar-react";
 
   return {
     plugins: [react(), copyManifestPlugin()],

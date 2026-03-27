@@ -1,7 +1,12 @@
 import type { Moment } from "moment";
 import { type ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 
-import type { ICalendarSource, IDayMetadata } from "./types";
+import type {
+  ICalendarSource,
+  IDayMetadata,
+  ILocaleOverride,
+  IWeekStartOption,
+} from "./types";
 import { getDailyMetadata, getWeeklyMetadata } from "./metadata";
 import { getDaysOfWeek, getMonth, isWeekend } from "./utils";
 import { Nav } from "./Nav";
@@ -13,6 +18,8 @@ interface CalendarProps {
   sources: ICalendarSource[];
   selectedId: string | null;
   showWeekNums: boolean;
+  localeOverride: ILocaleOverride;
+  weekStart: IWeekStartOption;
   displayedMonth: Moment;
   onDisplayedMonthChange: (m: Moment) => void;
   onClickDay: (date: Moment, isMetaPressed: boolean) => void;
@@ -28,6 +35,8 @@ export function Calendar({
   sources,
   selectedId,
   showWeekNums,
+  localeOverride,
+  weekStart,
   displayedMonth,
   onDisplayedMonthChange,
   onClickDay,
@@ -39,8 +48,14 @@ export function Calendar({
 }: CalendarProps): ReactElement {
   const [currentToday, setCurrentToday] = useState(() => window.moment());
 
-  const month = useMemo(() => getMonth(displayedMonth), [displayedMonth]);
-  const daysOfWeek = useMemo(() => getDaysOfWeek(), []);
+  const month = useMemo(
+    () => getMonth(displayedMonth),
+    [displayedMonth, localeOverride, weekStart]
+  );
+  const daysOfWeek = useMemo(
+    () => getDaysOfWeek(),
+    [localeOverride, weekStart]
+  );
 
   const dailyMetadataCache = useMemo(() => {
     const cache = new Map<string, Promise<IDayMetadata>>();
