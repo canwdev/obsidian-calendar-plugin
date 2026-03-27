@@ -102,7 +102,7 @@ export function Calendar({
   );
 
   return (
-    <div id="calendar-react-container" className="calendar-react-root px-1.5">
+    <div id="calendar-react-container" className="calendar-react-root px-2 pb-1.5">
       <Nav
         today={currentToday}
         displayedMonth={displayedMonth}
@@ -111,9 +111,9 @@ export function Calendar({
         onReset={resetMonth}
         onDisplayedMonthChange={onDisplayedMonthChange}
       />
-      <table className="w-full border-collapse table-fixed calendar-table">
+      <table className="calendar-table w-full table-fixed">
         <colgroup>
-          {showWeekNums && <col className="w-8" />}
+          {showWeekNums && <col className="w-9" />}
           {month[0]?.days.map((date) => (
             <col
               key={date.format()}
@@ -125,7 +125,7 @@ export function Calendar({
           <tr>
             {showWeekNums && (
               <th
-                className="text-center text-[0.6em] uppercase tracking-wider p-0.5"
+                className="text-center text-[0.65em] font-medium uppercase tracking-wider px-1 py-2"
                 style={{
                   backgroundColor: "var(--color-background-heading)",
                   color: "var(--color-text-heading)",
@@ -137,7 +137,7 @@ export function Calendar({
             {daysOfWeek.map((day) => (
               <th
                 key={day}
-                className="text-center text-[0.6em] uppercase tracking-wider p-0.5"
+                className="text-center text-[0.65em] font-medium uppercase tracking-wider px-1 py-2"
                 style={{
                   backgroundColor: "var(--color-background-heading)",
                   color: "var(--color-text-heading)",

@@ -60,11 +60,11 @@ function WeekNumCellInner({
   };
 
   return (
-    <td className="border-r border-[var(--background-modifier-border)] align-top">
+    <td className="align-top p-0 border-r border-[var(--background-modifier-border)] pr-0.5">
       <div
-        className={`rounded cursor-pointer text-center text-[0.65rem] p-0.5 transition-colors box-border w-full min-h-[2rem] ${classes.join(" ")}`}
+        className={`calendar-cell-interactive calendar-week-cell-inner cursor-pointer text-center text-[0.65rem] box-border w-full min-h-[2.35rem] rounded-md px-0.5 py-1 ${isActive ? "is-selected" : ""} ${classes.join(" ")}`}
         style={{
-          backgroundColor: isActive ? "var(--interactive-accent)" : "var(--color-background-weeknum)",
+          backgroundColor: isActive ? "var(--interactive-accent)" : undefined,
           color: isActive ? "var(--text-on-accent)" : "var(--color-text-weeknum)",
         }}
         onClick={handleClick}
@@ -72,7 +72,7 @@ function WeekNumCellInner({
         onPointerOver={handlePointerOver}
       >
         <span className="block leading-tight">{weekNum}</span>
-        <div className="flex flex-wrap justify-center items-center gap-x-px gap-y-0.5 h-3 min-h-3 leading-none">
+        <div className="flex flex-wrap justify-center items-center gap-x-0.5 gap-y-0.5 min-h-3 mt-0.5 leading-none">
           {dots.map((dot, i) => (
             <Dot key={i} {...dot} isActive={isActive} />
           ))}

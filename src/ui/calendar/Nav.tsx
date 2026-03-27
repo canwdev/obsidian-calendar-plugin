@@ -25,7 +25,7 @@ export function Nav({
   const todayDisplayStr = today.calendar().split(/\d|\s/)[0];
 
   return (
-    <div className="flex items-center w-full my-2 px-2">
+    <div className="flex items-center w-full py-2.5 px-0.5 gap-2">
       <div className="relative" ref={triggerRef}>
         <h3
           className="m-0 text-2xl cursor-pointer"
@@ -49,10 +49,10 @@ export function Nav({
           today={today}
         />
       </div>
-      <div className="flex justify-center ml-auto">
+      <div className="flex justify-center items-center ml-auto gap-0.5">
         <Arrow direction="left" onClick={onDecrement} tooltip="Previous Month" />
         <div
-          className="cursor-pointer rounded px-1 text-xs font-semibold uppercase mx-1 hidden sm:block"
+          className="cursor-pointer rounded-md px-2 py-1 text-xs font-semibold uppercase transition-colors hover:bg-[var(--background-modifier-hover)] hidden sm:block"
           style={{ color: "var(--text-muted)", letterSpacing: "1px" }}
           onClick={onReset}
         >
