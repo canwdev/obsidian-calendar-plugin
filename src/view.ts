@@ -11,7 +11,6 @@ import { createRoot, type Root } from "react-dom/client";
 import { createElement } from "react";
 
 import { TRIGGER_ON_OPEN, VIEW_TYPE_CALENDAR } from "src/constants";
-import { logStep, reportStartupError } from "src/startupLog";
 import { tryToCreateDailyNote } from "src/io/dailyNotes";
 import { tryToCreateWeeklyNote } from "src/io/weeklyNotes";
 
@@ -71,7 +70,9 @@ export default class CalendarView extends ItemView {
     this.registerEvent(this.app.vault.on("create", (f) => this.onFileCreated(f as TFile)));
     this.registerEvent(this.app.vault.on("delete", (f) => this.onFileDeleted(f as TFile)));
     this.registerEvent(this.app.vault.on("modify", (f) => this.onFileModified(f as TFile)));
-    this.registerEvent(this.app.workspace.on("file-open", (f) => this.onFileOpen(f)));
+    this.registerEvent(
+      this.app.workspace.on("file-open", () => this.onFileOpen())
+    );
   }
 
   getViewType(): string {
@@ -97,48 +98,36 @@ export default class CalendarView extends ItemView {
   }
 
   async onOpen(): Promise<void> {
-    try {
-      logStep("CalendarView.onOpen: start");
+    const sources = [
+      customTagsSource,
+      streakSource,
+      wordCountSource,
+      tasksSource,
+    ];
+    this.app.workspace.trigger(TRIGGER_ON_OPEN, sources);
 
-      const sources = [
-        customTagsSource,
-        streakSource,
-        wordCountSource,
-        tasksSource,
-      ];
-      logStep("CalendarView.onOpen: trigger sources");
-      this.app.workspace.trigger(TRIGGER_ON_OPEN, sources);
+    const currentSettings = settings.getValue();
+    configureGlobalMomentLocale(
+      currentSettings.localeOverride,
+      currentSettings.weekStart
+    );
+    dailyNotes.reindex();
+    weeklyNotes.reindex();
 
-      const currentSettings = settings.getValue();
-      logStep("CalendarView.onOpen: configureGlobalMomentLocale");
-      configureGlobalMomentLocale(
-        currentSettings.localeOverride,
-        currentSettings.weekStart
-      );
-      logStep("CalendarView.onOpen: reindex daily/weekly notes");
-      dailyNotes.reindex();
-      weeklyNotes.reindex();
-
-      logStep("CalendarView.onOpen: createRoot + render");
-      this.reactContainer = this.contentEl.createDiv();
-      this.root = createRoot(this.reactContainer);
-      this.root.render(
-        createElement(CalendarRoot, {
-          ref: this.calendarRef,
-          sources,
-          onClickDay: this.openOrCreateDailyNote,
-          onClickWeek: this.openOrCreateWeeklyNote,
-          onHoverDay: this.onHoverDay,
-          onHoverWeek: this.onHoverWeek,
-          onContextMenuDay: this.onContextMenuDay,
-          onContextMenuWeek: this.onContextMenuWeek,
-        })
-      );
-      logStep("CalendarView.onOpen: complete");
-    } catch (e) {
-      reportStartupError("CalendarView.onOpen", e);
-      throw e;
-    }
+    this.reactContainer = this.contentEl.createDiv();
+    this.root = createRoot(this.reactContainer);
+    this.root.render(
+      createElement(CalendarRoot, {
+        ref: this.calendarRef,
+        sources,
+        onClickDay: this.openOrCreateDailyNote,
+        onClickWeek: this.openOrCreateWeeklyNote,
+        onHoverDay: this.onHoverDay,
+        onHoverWeek: this.onHoverWeek,
+        onContextMenuDay: this.onContextMenuDay,
+        onContextMenuWeek: this.onContextMenuWeek,
+      })
+    );
   }
 
   onHoverDay(
@@ -218,7 +207,7 @@ export default class CalendarView extends ItemView {
     }
   }
 
-  public onFileOpen(_file: TFile | null): void {
+  public onFileOpen(): void {
     if (this.app.workspace.layoutReady) {
       this.updateActiveFile();
     }
