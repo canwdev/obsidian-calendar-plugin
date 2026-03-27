@@ -54,22 +54,20 @@ export const CalendarRoot = forwardRef<CalendarRootHandle, CalendarRootProps>(
       () => activeFile.getValue()
     );
 
+    configureGlobalMomentLocale(
+      currentSettings.localeOverride,
+      currentSettings.weekStart
+    );
+
     const [displayedMonth, setDisplayedMonthState] = useState<Moment>(() =>
       window.moment()
     );
     const [tick, setTick] = useState(0);
 
     useEffect(() => {
-      configureGlobalMomentLocale(
-        currentSettings.localeOverride,
-        currentSettings.weekStart
-      );
       dailyNotes.reindex();
       weeklyNotes.reindex();
-    }, [
-      currentSettings.localeOverride,
-      currentSettings.weekStart,
-    ]);
+    }, [currentSettings.localeOverride, currentSettings.weekStart]);
 
     const setDisplayedMonth = useCallback((date: Moment) => {
       setDisplayedMonthState(date.clone());
@@ -94,6 +92,8 @@ export const CalendarRoot = forwardRef<CalendarRootHandle, CalendarRootProps>(
         sources={sources}
         selectedId={selectedId}
         showWeekNums={currentSettings.showWeeklyNote}
+        localeOverride={currentSettings.localeOverride}
+        weekStart={currentSettings.weekStart}
         displayedMonth={displayedMonth}
         onDisplayedMonthChange={setDisplayedMonth}
         onClickDay={onClickDay}
