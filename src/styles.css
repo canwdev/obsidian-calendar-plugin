@@ -30,3 +30,41 @@
   --color-text-today: var(--interactive-accent);
   --color-text-weeknum: var(--text-muted);
 }
+
+/* Calendar grid: breathing room between cells */
+#calendar-react-container .calendar-table {
+  border-collapse: separate;
+  border-spacing: 3px 5px;
+}
+
+#calendar-react-container .calendar-cell-interactive {
+  transition:
+    background-color 0.14s ease,
+    box-shadow 0.14s ease,
+    filter 0.14s ease,
+    opacity 0.14s ease;
+}
+
+#calendar-react-container
+  .calendar-day-cell-inner:not(.is-selected):hover,
+#calendar-react-container
+  .calendar-week-cell-inner:not(.is-selected):hover {
+  background-color: var(--background-modifier-hover);
+}
+
+#calendar-react-container .calendar-day-cell-inner.is-selected:hover {
+  filter: brightness(1.07);
+}
+
+#calendar-react-container .calendar-day-cell-inner.is-adjacent:not(:hover) {
+  opacity: 0.32;
+}
+
+#calendar-react-container .calendar-day-cell-inner.is-adjacent:hover {
+  opacity: 0.55;
+}
+
+#calendar-react-container
+  .calendar-day-cell-inner.is-today:not(.is-selected) {
+  box-shadow: inset 0 0 0 1px var(--interactive-accent);
+}

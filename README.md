@@ -34,3 +34,7 @@
 
 1. 在 Obsidian 中安装 [hot-reload](https://github.com/pjeby/hot-reload) 插件，并在 `calendar-react` 目录下创建 `.hotreload` 文件。
 2. 执行 `bun run build`（或自行配置 watch 模式）。hot-reload 会监听插件目录中构建产物的变化并自动重载。
+
+### 调试
+
+- 移动端可用 [obsidian-dev-tools](https://github.com/KjellConnelly/obsidian-dev-tools) 插件查看日志。

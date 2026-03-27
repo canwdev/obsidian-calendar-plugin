@@ -7,7 +7,7 @@ interface ArrowProps {
 export function Arrow({ direction, onClick, tooltip }: ArrowProps): JSX.Element {
   return (
     <div
-      className={`flex items-center justify-center w-6 cursor-pointer ${direction === "right" ? "rotate-180" : ""}`}
+      className={`flex items-center justify-center h-8 w-8 shrink-0 cursor-pointer rounded-md transition-colors hover:bg-[var(--background-modifier-hover)] active:scale-95 ${direction === "right" ? "rotate-180" : ""}`}
       onClick={onClick}
       onKeyDown={(e) => e.key === "Enter" && onClick()}
       role="button"
